@@ -1,0 +1,90 @@
+use std::collections::HashMap;
+
+use crate::utils;
+
+pub struct _1 {
+    collection_1: Vec<i32>,
+    collection_2: Vec<i32>,
+}
+
+pub fn init() -> Result<_1, ()> {
+    let mut _1 = _1 {
+        collection_1: vec![],
+        collection_2: vec![],
+    };
+
+    match utils::http::request(1, None) {
+        Ok(input) => {
+            for input_line in input.split("\n") {
+                let inputs: Vec<&str> = input_line.split("   ").collect();
+                if inputs.len() != 2 {
+                    continue;
+                }
+
+                match inputs[0].parse::<i32>() {
+                    Ok(number) => _1.collection_1.push(number),
+                    Err(err) => {
+                        eprintln!("An error occurred while parsing the input: {}", &err);
+                        return Err(());
+                    }
+                }
+
+                match inputs[1].parse::<i32>() {
+                    Ok(number) => _1.collection_2.push(number),
+                    Err(err) => {
+                        eprintln!("An error occurred while parsing the input: {}", &err);
+                        return Err(());
+                    }
+                }
+            }
+        }
+        Err(()) => {
+            return Err(());
+        }
+    }
+
+    return Ok(_1);
+}
+
+impl _1 {
+    fn part1(&mut self) -> String {
+        let mut result = 0;
+
+        self.collection_1.sort();
+        self.collection_2.sort();
+
+        for i in 0..self.collection_1.len() {
+            result += (self.collection_1[i] - self.collection_2[i]).abs()
+        }
+
+        return result.to_string();
+    }
+
+    fn part2(&self) -> String {
+        let mut result = 0;
+        let mut collection_2_map = HashMap::<i32, i32>::new();
+
+        for i in 0..self.collection_2.len() {
+            match collection_2_map.get(&self.collection_2[i]) {
+                Some(collection_2_entry) => {
+                    collection_2_map.insert(self.collection_2[i], collection_2_entry + 1)
+                }
+                None => collection_2_map.insert(self.collection_2[i], 1),
+            };
+        }
+
+        for i in 0..self.collection_1.len() {
+            let collection_1_entry = self.collection_1[i];
+            result += collection_1_entry
+                * collection_2_map
+                    .get(&collection_1_entry)
+                    .unwrap_or_else(|| &0)
+        }
+
+        return result.to_string();
+    }
+
+    pub fn results(mut self) -> Vec<String> {
+        vec![self.part1(), self.part2()]
+    }
+}
