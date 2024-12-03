@@ -7,7 +7,7 @@ pub struct _2 {
 pub fn init() -> Result<_2, ()> {
     let mut _2 = _2 { collection: vec![] };
 
-    match utils::http::request(2, None) {
+    match utils::http::request(2) {
         Ok(input) => {
             for input_line in input.split("\n") {
                 if input_line.len() == 0 {
@@ -27,8 +27,6 @@ pub fn init() -> Result<_2, ()> {
 
                 _2.collection.push(input_line_collection);
             }
-            // TODO: Fix edge case:
-            // _2.collection.push(vec![18, 21, 19, 17, 16]);
         }
         Err(()) => {
             return Err(());
@@ -43,40 +41,6 @@ impl _2 {
 
         for line_collection in self.collection.iter() {
             result += self.is_valid_line_collection(line_collection, None, 0);
-            // let mut is_valid_line_collection = true;
-
-            // let mut p_previous_number: Option<&i32> = None;
-            // let mut p_increase: Option<bool> = None;
-
-            // for number in line_collection.iter() {
-            //     match p_previous_number {
-            //         Some(previous_number) => {
-            //             let difference = previous_number - number;
-
-            //             if !(0 < difference.abs() && difference.abs() < 4) {
-            //                 is_valid_line_collection = false;
-            //                 break;
-            //             }
-
-            //             p_previous_number = Some(number);
-
-            //             match p_increase {
-            //                 Some(increase) => {
-            //                     if increase != difference.is_positive() {
-            //                         is_valid_line_collection = false;
-            //                         break;
-            //                     }
-            //                 }
-            //                 None => p_increase = Some(difference.is_positive()),
-            //             }
-            //         }
-            //         None => p_previous_number = Some(number),
-            //     }
-            // }
-
-            // if is_valid_line_collection {
-            //     result += 1;
-            // }
         }
 
         result.to_string()
@@ -105,7 +69,7 @@ impl _2 {
 
         let mut i_line_collection = line_collection.clone();
         if let Some(invalid_number_index) = p_invalid_number_index {
-            if invalid_number_index as i8 - allowed_mut_count as i8 >= 0 {
+            if !((invalid_number_index as i8 - allowed_mut_count as i8) < 0) {
                 i_line_collection.remove(invalid_number_index - allowed_mut_count);
             }
         }

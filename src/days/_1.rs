@@ -13,7 +13,7 @@ pub fn init() -> Result<_1, ()> {
         collection_2: vec![],
     };
 
-    match utils::http::request(1, None) {
+    match utils::http::request(1) {
         Ok(input) => {
             for input_line in input.split("\n") {
                 let inputs: Vec<&str> = input_line.split("   ").collect();

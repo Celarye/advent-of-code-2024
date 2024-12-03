@@ -1,7 +1,7 @@
 use std::{env, fs};
 
 pub fn load_session_token() -> Result<(), u8> {
-    println!("Loading all environment variables from the dotenv file");
+    println!("Loading all environment variables from the dotenv file...");
 
     let p_dotenv_vec = fs::read(".env");
 
