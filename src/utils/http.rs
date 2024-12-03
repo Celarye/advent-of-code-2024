@@ -1,4 +1,8 @@
 // TODO: Replace the Curl subprocess with a basic HTTP/2 request using std::io::net
+// TODO: Cache the response
+// TODO: Prevent early fetching
+// TODO: Improve input parsing
+
 use std::{env, process::Command};
 
 pub fn request(day: u8, part: Option<u8>) -> Result<String, ()> {
