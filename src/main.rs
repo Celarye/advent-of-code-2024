@@ -1,3 +1,5 @@
+// TODO: Review day 1 and 2 code
+
 use std::process::ExitCode;
 
 mod days;

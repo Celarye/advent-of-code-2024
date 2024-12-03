@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, iter::zip};
 
 use crate::utils;
 
@@ -53,8 +53,8 @@ impl _1 {
         self.collection_1.sort();
         self.collection_2.sort();
 
-        for i in 0..self.collection_1.len() {
-            result += (self.collection_1[i] - self.collection_2[i]).abs()
+        for (number_1, number_2) in zip(self.collection_1.iter(), self.collection_2.iter()) {
+            result += (number_1 - number_2).abs()
         }
 
         return result.to_string();
@@ -64,17 +64,17 @@ impl _1 {
         let mut result = 0;
         let mut collection_2_map = HashMap::<i32, i32>::new();
 
-        for i in 0..self.collection_2.len() {
-            match collection_2_map.get(&self.collection_2[i]) {
+        for number in self.collection_2.iter() {
+            match collection_2_map.get(&number) {
                 Some(collection_2_entry) => {
-                    collection_2_map.insert(self.collection_2[i], collection_2_entry + 1)
+                    collection_2_map.insert(*number, collection_2_entry + 1)
                 }
-                None => collection_2_map.insert(self.collection_2[i], 1),
+                None => collection_2_map.insert(*number, 1),
             };
         }
 
-        for i in 0..self.collection_1.len() {
-            let collection_1_entry = self.collection_1[i];
+        for number in self.collection_1.iter() {
+            let collection_1_entry = number;
             result += collection_1_entry
                 * collection_2_map
                     .get(&collection_1_entry)
