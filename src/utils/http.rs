@@ -13,7 +13,7 @@ pub fn request(day: u8) -> Result<String, ()> {
             "Cookie: session={}",
             env::var("SESSION").unwrap_or_else(|_| "".to_string())
         ))
-        .arg(format!("https://adventofcode.com/2024/day/{}/input", day))
+        .arg(format!("https://adventofcode.com/2024/day/{}/input", &day))
         .output();
 
     match p_request {

@@ -5,7 +5,7 @@ pub struct Template {}
 pub fn init() -> Result<Template, ()> {
     let mut template = Template {};
 
-    match utils::http::request(0, None) {
+    match utils::http::request(0) {
         Ok(_) => (),
         Err(()) => {
             return Err(());
