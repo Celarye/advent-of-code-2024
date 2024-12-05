@@ -5,10 +5,10 @@ pub struct _2 {
 }
 
 pub fn init() -> Result<_2, ()> {
-    let mut _2 = _2 { collection: vec![] };
-
     match utils::http::request(2) {
         Ok(input) => {
+            let mut _2 = _2 { collection: vec![] };
+
             for input_line in input.split("\n") {
                 if input_line.len() == 0 {
                     continue;
@@ -27,12 +27,11 @@ pub fn init() -> Result<_2, ()> {
 
                 _2.collection.push(input_line_collection);
             }
+
+            Ok(_2)
         }
-        Err(()) => {
-            return Err(());
-        }
+        Err(()) => Err(()),
     }
-    Ok(_2)
 }
 
 impl _2 {

@@ -9,9 +9,7 @@ pub fn init() -> Result<_3, ()> {
         Ok(input) => Ok(_3 {
             input: input.replace("\n", ""),
         }),
-        Err(()) => {
-            return Err(());
-        }
+        Err(()) => Err(()),
     }
 }
 
