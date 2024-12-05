@@ -8,13 +8,13 @@ pub struct _1 {
 }
 
 pub fn init() -> Result<_1, ()> {
-    let mut _1 = _1 {
-        collection_1: vec![],
-        collection_2: vec![],
-    };
-
     match utils::http::request(1) {
         Ok(input) => {
+            let mut _1 = _1 {
+                collection_1: vec![],
+                collection_2: vec![],
+            };
+
             for input_line in input.split("\n") {
                 let inputs: Vec<&str> = input_line.split("   ").collect();
                 if inputs.len() != 2 {
@@ -37,13 +37,11 @@ pub fn init() -> Result<_1, ()> {
                     }
                 }
             }
-        }
-        Err(()) => {
-            return Err(());
-        }
-    }
 
-    return Ok(_1);
+            Ok(_1)
+        }
+        Err(()) => Err(()),
+    }
 }
 
 impl _1 {

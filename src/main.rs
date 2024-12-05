@@ -1,3 +1,5 @@
+// Add tests using the example data
+
 use std::process::ExitCode;
 
 mod days;
