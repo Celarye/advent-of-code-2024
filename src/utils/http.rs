@@ -1,6 +1,6 @@
 // TODO: Replace the Curl subprocess with a basic HTTP/2 request using std::io::net
 // TODO: Prevent early fetching
-// TODO: Cache the response
+// TODO: Cache the response and use the instead cache if it is available
 
 use std::{env, process::Command};
 
@@ -17,8 +17,8 @@ pub fn request(day: u8) -> Result<String, ()> {
         .output();
 
     match p_request {
-        Ok(p_input) => match String::from_utf8(p_input.stdout) {
-            Ok(input) => match input.as_str() {
+        Ok(p_input_string) => match String::from_utf8(p_input_string.stdout) {
+            Ok(input_string) => match input_string.as_str() {
                 "Puzzle inputs differ by user.  Please log in to get your puzzle input.\n" => {
                     eprintln!("An error occurred while requesting the input: the provided session token is invalid");
                     Err(())
@@ -29,7 +29,7 @@ pub fn request(day: u8) -> Result<String, ()> {
                 }
                 _ => {
                     println!("Successfully requested the input");
-                    Ok(input)
+                    Ok(input_string)
                 }
             }
             Err(err) => {

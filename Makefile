@@ -8,6 +8,10 @@ check:
 	@echo "Checking..."
 	@cargo check
 
+test:
+	@echo "Running tests..."
+	@cargo test
+
 build_dev:
 	@echo "Building debug..."
 	@cargo build

@@ -1,29 +1,15 @@
 use std::{env, fs};
 
-pub fn load_session_token() -> Result<(), u8> {
+pub fn load_dotenv() -> Result<(), u8> {
     println!("Loading all environment variables from the dotenv file...");
 
-    let p_dotenv_vec = fs::read(".env");
-
-    let dotenv_vec;
-    match p_dotenv_vec {
-        Ok(r_dotenv_vec) => dotenv_vec = r_dotenv_vec,
-        Err(err) => {
-            eprintln!("Failed to load the dotenv file, error: {}", &err);
-            return Err(0x1);
-        }
-    }
-
-    let p_dotenv_string = String::from_utf8(dotenv_vec);
+    let p_dotenv_string = fs::read_to_string(".env");
 
     let dotenv_string;
     match p_dotenv_string {
         Ok(r_dotenv_string) => dotenv_string = r_dotenv_string,
         Err(err) => {
-            eprintln!(
-                "Failed to parse the dotenv vec<u8> into a String, error: {}",
-                &err
-            );
+            eprintln!("Failed to load the dotenv file, error: {}", &err);
             return Err(0x1);
         }
     }
