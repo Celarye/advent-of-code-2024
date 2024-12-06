@@ -49,6 +49,7 @@ impl _2 {
         let mut result = 0;
 
         for line_collection in self.collection.iter() {
+            // TODO: Fix the bug where is_valid_line_collection calls itself with a None p_invalid_number_index, correct the allowed mutation count and move the subtract with overflow check to the method call
             result += self.is_valid_line_collection(line_collection, None, 3);
         }
 
