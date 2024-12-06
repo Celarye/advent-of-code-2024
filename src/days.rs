@@ -2,6 +2,7 @@ mod _1;
 mod _2;
 mod _3;
 mod _4;
+mod _5;
 
 pub fn results() -> Vec<Vec<String>> {
     let _1_results;
@@ -28,5 +29,11 @@ pub fn results() -> Vec<Vec<String>> {
         Err(()) => _4_results = vec!["Error".to_string(), "Error".to_string()],
     }
 
-    vec![_1_results, _2_results, _3_results, _4_results]
+    let _5_results;
+    match _5::init() {
+        Ok(_5) => _5_results = _5.results(),
+        Err(()) => _5_results = vec!["Error".to_string(), "Error".to_string()],
+    }
+
+    vec![_1_results, _2_results, _3_results, _4_results, _5_results]
 }
