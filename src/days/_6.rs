@@ -2,10 +2,11 @@ use std::collections::HashMap;
 
 use crate::utils;
 
+#[derive(Clone)]
 pub struct _6 {
     matrix: Vec<Vec<char>>,
     current_location: Vec<usize>,
-    direction_change_locations: HashMap<Vec<usize>, Vec<i16>>,
+    direction_change_locations: HashMap<Vec<i16>, u8>,
 }
 
 pub fn init() -> Result<_6, ()> {
@@ -24,7 +25,7 @@ pub fn init() -> Result<_6, ()> {
 impl _6 {
     fn parse_input(mut self, string: &String) -> Result<_6, ()> {
         self.matrix.push(
-            (0..(string.split("\n").next().unwrap().len() + 2))
+            (0..(string.split("\n").next().unwrap_or("").len() + 2))
                 .map(|_| '+')
                 .collect(),
         );
@@ -49,19 +50,8 @@ impl _6 {
             self.matrix.push(matrix_line);
         }
 
-        self.matrix.push(
-            (0..(string.split("\n").next().unwrap().len() + 2))
-                .map(|_| '+')
-                .collect(),
-        );
-
-        for row in self.matrix.iter() {
-            for char in row.iter() {
-                print!("{}", char);
-            }
-
-            print!("\n")
-        }
+        self.matrix
+            .push((0..self.matrix[0].len()).map(|_| '+').collect());
 
         Ok(self)
     }
@@ -74,155 +64,39 @@ impl _6 {
     }
 
     fn part2(&mut self) -> String {
-        // let mut result = 0;
+        let mut result = 0;
 
-        // TODO: Fix index bug in the try_path method and implement a decent solution for part 2.
+        let original_start = self.current_location.clone();
 
-        // Brute force:
+        let original_matrix = self.matrix.clone();
 
-        // match self.try_path() {
-        //     Some(_) => (),
-        //     None => panic!("the initial try should always resolve to a result"),
-        // }
+        match self.try_path() {
+            Some(_) => (),
+            None => panic!("the initial try should always resolve to a result"),
+        }
 
-        // for (index_y, row) in self.matrix.clone().iter().enumerate() {
-        //     for (index_x, char) in row.iter().enumerate() {
-        //         if char == &'.' {
-        //             self.matrix[index_y][index_x] = '#';
+        let original_obstacles = self.direction_change_locations.clone();
 
-        //             match self.try_path() {
-        //                 Some(_) => (),
-        //                 None => result += 1,
-        //             }
+        for (index_y, row) in self.matrix.clone().clone().iter().enumerate() {
+            for (index_x, char) in row.iter().enumerate() {
+                if char != &'X' || original_start == vec![index_y, index_x] {
+                    continue;
+                }
 
-        //             self.matrix[index_y][index_x] = *char;
-        //         }
-        //     }
-        // // }
+                self.matrix = original_matrix.clone();
+                self.current_location = original_start.clone();
+                self.direction_change_locations = original_obstacles.clone();
 
-        // More performant solution:
+                self.matrix[index_y][index_x] = '#';
 
-        // match self.try_path() {
-        //     Some(_) => (),
-        //     None => panic!("the initial try should always resolve to a result"),
-        // }
+                match self.try_path() {
+                    Some(_) => (),
+                    None => result += 1,
+                }
+            }
+        }
 
-        // for (direction_change_location, direction_change_metadata) in
-        //     self.direction_change_locations.clone()
-        // {
-        //     println!(
-        //         "Test: [{}, {}] | {} | {}",
-        //         direction_change_location[0] + 1,
-        //         direction_change_location[1] + 1,
-        //         self.matrix[direction_change_location[0]][direction_change_location[1]],
-        //         result
-        //     );
-
-        //     let mut relative_check_location =
-        //         vec![direction_change_metadata[1], direction_change_metadata[2]];
-
-        //     loop {
-        //         println!(
-        //             "Found: [{}, {}] | {}",
-        //             (direction_change_location[0] as i16 + relative_check_location[0] + 1) as usize,
-        //             (direction_change_location[1] as i16 + relative_check_location[1] + 1) as usize,
-        //             self.matrix[(direction_change_location[0] as i16 + relative_check_location[0])
-        //                 as usize][(direction_change_location[1] as i16
-        //                 + relative_check_location[1]) as usize]
-        //         );
-
-        //         if self.matrix
-        //             [(direction_change_location[0] as i16 + relative_check_location[0]) as usize]
-        //             [(direction_change_location[1] as i16 + relative_check_location[1]) as usize]
-        //             == 'X'
-        //         {
-        //             let original_value = self.matrix[(direction_change_location[0] as i16
-        //                 + relative_check_location[0]
-        //                 + direction_change_metadata[1])
-        //                 as usize][(direction_change_location[1] as i16
-        //                 + relative_check_location[1]
-        //                 + direction_change_metadata[2]) as usize];
-
-        //             self.matrix[(direction_change_location[0] as i16
-        //                 + relative_check_location[0]
-        //                 + direction_change_metadata[1]) as usize]
-        //                 [(direction_change_location[1] as i16
-        //                     + relative_check_location[1]
-        //                     + direction_change_metadata[2]) as usize] = '#';
-
-        //             println!(
-        //                 "Set: [{}, {}] | {}",
-        //                 (direction_change_location[0] as i16
-        //                     + relative_check_location[0]
-        //                     + direction_change_metadata[1]) as usize,
-        //                 (direction_change_location[1] as i16
-        //                     + relative_check_location[1]
-        //                     + direction_change_metadata[2]) as usize,
-        //                 self.matrix[(direction_change_location[0] as i16
-        //                     + relative_check_location[0]
-        //                     + direction_change_metadata[1])
-        //                     as usize][(direction_change_location[1] as i16
-        //                     + relative_check_location[1]
-        //                     + direction_change_metadata[2])
-        //                     as usize]
-        //             );
-
-        //             match self.try_path() {
-        //                 Some(_) => {
-        //                     self.matrix[(direction_change_location[0] as i16
-        //                         + relative_check_location[0]
-        //                         + direction_change_metadata[1])
-        //                         as usize][(direction_change_location[1]
-        //                         as i16
-        //                         + relative_check_location[1]
-        //                         + direction_change_metadata[2])
-        //                         as usize] = original_value;
-
-        //                     relative_check_location = vec![
-        //                         relative_check_location[0] + direction_change_metadata[1],
-        //                         relative_check_location[1] + direction_change_metadata[2],
-        //                     ];
-
-        //                     continue;
-        //                 }
-        //                 None => {
-        //                     result += 1;
-
-        //                     self.matrix[(direction_change_location[0] as i16
-        //                         + relative_check_location[0]
-        //                         + direction_change_metadata[1])
-        //                         as usize][(direction_change_location[1]
-        //                         as i16
-        //                         + relative_check_location[1]
-        //                         + direction_change_metadata[2])
-        //                         as usize] = original_value;
-
-        //                     break;
-        //                 }
-        //             }
-        //         } else if self.matrix
-        //             [(direction_change_location[0] as i16 + relative_check_location[0]) as usize]
-        //             [(direction_change_location[1] as i16 + relative_check_location[1]) as usize]
-        //             == '#'
-        //             || self.matrix[(direction_change_location[0] as i16
-        //                 + relative_check_location[0]) as usize]
-        //                 [(direction_change_location[1] as i16 + relative_check_location[1])
-        //                     as usize]
-        //                 == '+'
-        //         {
-        //             break;
-        //         } else {
-        //             relative_check_location = vec![
-        //                 relative_check_location[0] + direction_change_metadata[1],
-        //                 relative_check_location[1] + direction_change_metadata[2],
-        //             ];
-        //         }
-        //     }
-        // }
-
-        // result.to_string()
-
-        "No Result".to_string()
+        result.to_string()
     }
 
     fn try_path(&mut self) -> Option<u16> {
@@ -236,25 +110,30 @@ impl _6 {
             match self.matrix[(self.current_location[0] as i16 + direction[0]) as usize]
                 [(self.current_location[1] as i16 + direction[1]) as usize]
             {
-                '+' => break,
+                '+' => return Some(result),
+
                 '#' => {
-                    let direction_change = match self.direction_change_locations.get(&vec![
-                        (self.current_location[0] as i16 + direction[0]) as usize,
-                        (self.current_location[1] as i16 + direction[1]) as usize,
+                    let direction_change_count = match self.direction_change_locations.get(&vec![
+                        self.current_location[0] as i16 + direction[0],
+                        self.current_location[1] as i16 + direction[1],
+                        -direction[0],
+                        -direction[1],
                     ]) {
-                        Some(metadata) => metadata,
-                        None => &vec![0, 0, 0],
+                        Some(direction_change_count) => direction_change_count,
+                        None => &0,
                     };
 
-                    if direction_change[0] == 3 {
+                    if direction_change_count == &3 {
                         return None;
                     } else {
                         self.direction_change_locations.insert(
                             vec![
-                                (self.current_location[0] as i16 + direction[0]) as usize,
-                                (self.current_location[1] as i16 + direction[1]) as usize,
+                                self.current_location[0] as i16 + direction[0],
+                                self.current_location[1] as i16 + direction[1],
+                                -direction[0],
+                                -direction[1],
                             ],
-                            vec![direction_change[0] + 1, -direction[0], -direction[1]],
+                            direction_change_count + 1,
                         );
                     }
 
@@ -263,6 +142,18 @@ impl _6 {
                         [0, 1] => direction = vec![1, 0],
                         [1, 0] => direction = vec![0, -1],
                         _ => direction = vec![-1, 0],
+                    }
+
+                    if self.matrix[(self.current_location[0] as i16 + direction[0]) as usize]
+                        [(self.current_location[1] as i16 + direction[1]) as usize]
+                        == '#'
+                    {
+                        match direction[..] {
+                            [-1, 0] => direction = vec![0, 1],
+                            [0, 1] => direction = vec![1, 0],
+                            [1, 0] => direction = vec![0, -1],
+                            _ => direction = vec![-1, 0],
+                        }
                     }
                 }
                 _ => (),
@@ -277,12 +168,11 @@ impl _6 {
                 result += 1
             }
         }
-
-        Some(result)
     }
 
     pub fn results(mut self) -> Vec<String> {
-        vec![self.part1(), self.part2()]
+        let mut _self = self.clone();
+        vec![self.part1(), _self.part2()]
     }
 }
 
