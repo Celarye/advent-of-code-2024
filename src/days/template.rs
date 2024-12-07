@@ -6,13 +6,13 @@ pub fn init() -> Result<Template, ()> {
     let mut template = Template {};
 
     match utils::http::request(0) {
-        Ok(string) => template.parse_input(&input_string),
+        Ok(input_string) => template.parse_input(&input_string),
         Err(()) => Err(()),
     }
 }
 
 impl Template {
-    fn parse_input(mut self, string: &String) -> Result<Template, ()> {
+    fn parse_input(mut self, input_string: &String) -> Result<Template, ()> {
         Ok(self)
     }
 
@@ -31,6 +31,8 @@ impl Template {
 
 #[cfg(test)]
 mod tests {
+    use std::fs;
+
     use super::Template;
 
     pub fn test_init() -> Result<Template, ()> {
